@@ -48,11 +48,21 @@ pub fn build(b: *std.Build) void {
         .root_module = lib_mod,
     });
 
+    const wf = b.addWriteFiles();
+    _ = wf.addCopyFile(imgui_dep.path("imgui.h"), "imgui/imgui.h");
+    _ = wf.addCopyFile(imgui_dep.path("imconfig.h"), "imgui/imconfig.h");
+    _ = wf.addCopyFile(imgui_dep.path("imgui_internal.h"), "imgui/imgui_internal.h");
+    _ = wf.addCopyFile(imgui_dep.path("imstb_rectpack.h"), "imgui/imstb_rectpack.h");
+    _ = wf.addCopyFile(imgui_dep.path("imstb_textedit.h"), "imgui/imstb_textedit.h");
+    _ = wf.addCopyFile(imgui_dep.path("imstb_truetype.h"), "imgui/imstb_truetype.h");
+
+    lib.linkLibCpp();
+    lib.addIncludePath(wf.getDirectory());
     lib.addIncludePath(cimgui_dep.path(""));
-    lib.addIncludePath(imgui_dep.path(".."));
     lib.addCSourceFile(.{
         .file = cimgui_dep.path("cimgui.cpp"),
     });
+
 
     b.installArtifact(imgui);
     b.installArtifact(lib);
