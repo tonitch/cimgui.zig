@@ -12,13 +12,14 @@ pub fn build(b: *std.Build) void {
     const imgui_mod = b.addModule("imgui", .{
         .target = target,
         .optimize = optimize,
+        .link_libcpp = true,
     });
 
     const imgui = b.addLibrary(.{
         .name = "imgui", 
         .root_module = imgui_mod,
     });
-    imgui.linkLibCpp();
+
     imgui.addIncludePath(imgui_dep.path(""));
     imgui.addCSourceFiles(.{
         .root = imgui_dep.path(""),
@@ -31,7 +32,9 @@ pub fn build(b: *std.Build) void {
         }
     });
 
-    // ----
+    b.installArtifact(imgui);
+
+    // ---- cimgui ----
     
     const cimgui_dep = b.dependency("cimgui", .{
         .target = target,
@@ -41,6 +44,7 @@ pub fn build(b: *std.Build) void {
     const lib_mod = b.addModule("cimgui", .{
         .target = target,
         .optimize = optimize,
+        .link_libcpp = true,
     });
 
     const lib = b.addLibrary(.{
@@ -56,14 +60,13 @@ pub fn build(b: *std.Build) void {
     _ = wf.addCopyFile(imgui_dep.path("imstb_textedit.h"), "imgui/imstb_textedit.h");
     _ = wf.addCopyFile(imgui_dep.path("imstb_truetype.h"), "imgui/imstb_truetype.h");
 
-    lib.linkLibCpp();
     lib.addIncludePath(wf.getDirectory());
     lib.addIncludePath(cimgui_dep.path(""));
     lib.addCSourceFile(.{
         .file = cimgui_dep.path("cimgui.cpp"),
     });
 
+    lib.installHeader(cimgui_dep.path("cimgui.h"), "");
 
-    b.installArtifact(imgui);
     b.installArtifact(lib);
 }
