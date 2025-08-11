@@ -66,7 +66,7 @@ pub fn build(b: *std.Build) void {
         .file = cimgui_dep.path("cimgui.cpp"),
     });
 
-    lib.installHeader(cimgui_dep.path("cimgui.h"), "");
+    lib.installHeader(cimgui_dep.path("cimgui.h"), "cimgui.h");
 
     b.installArtifact(lib);
 }
