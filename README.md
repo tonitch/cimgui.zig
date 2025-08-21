@@ -16,4 +16,5 @@ const cimgui_dep = b.dependency("cimgui", .{
     .optimize = optimize,
 });
 
+exe.linkLibrary(cimgui_dep.artifact("cimgui"));
 ```
